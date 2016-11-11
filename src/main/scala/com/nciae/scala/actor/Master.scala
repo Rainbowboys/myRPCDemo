@@ -3,6 +3,7 @@ package com.nciae.scala.actor
 /**
  * Created by Rainbow on 2016/11/11.
  */
+
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import akka.actor.Props
@@ -28,8 +29,8 @@ class Master(val host: String, val port: Int) extends Actor {
   val CHECK_INTERVAL = 10 * 1000
 
   override def preStart(): Unit = {
-    println("preStart Invoke")
-
+    import context.dispatcher
+    context.system.scheduler.schedule(0 millis, CHECK_INTERVAL millis, self, MasterCheckOutTimeWorker)
   }
 
   override def receive: Receive = {
@@ -63,11 +64,10 @@ class Master(val host: String, val port: Int) extends Actor {
       }
       println("workerSize:" + workers.size)
     }
-
-    case "check" => {
-      import context.dispatcher
-      context.system.scheduler.schedule(0 millis, CHECK_INTERVAL millis, self, MasterCheckOutTimeWorker)
-    }
+//    case "check" => {
+//      import context.dispatcher
+//      context.system.scheduler.schedule(0 millis, CHECK_INTERVAL millis, self, MasterCheckOutTimeWorker)
+//    }
   }
 }
 
@@ -92,8 +92,6 @@ object Master {
      * Create new actor as child of this context with the given name,
      */
     val master = actorSystem.actorOf(Props(new Master(host, port)), "Master")
-    master ! "check"
-
     /**
      * 优雅的退出
      */

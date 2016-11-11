@@ -53,7 +53,7 @@
                   <resource>reference.conf</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>com.nciae.scala.actor.Master</mainClass>
+                  <mainClass>com.nciae.scala.actor.Worker</mainClass>
                 </transformer>
               </transformers>
             </configuration>
